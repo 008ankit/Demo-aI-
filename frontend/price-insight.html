@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price Insights | ecomAI</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo">ecomAI</a>
+        <nav>
+            <a href="product-session.html">Product Agent</a>
+            <a href="price-insight.html">Price Insights</a>
+            <a href="product-comparison.html">Comparisons</a>
+            <a href="history-insight.html">History Insight</a>
+        </nav>
+        <div class="auth">
+            <a href="#" class="login" onclick="toggleAuth(true)">Log in</a>
+            <a href="#" class="cta" onclick="openSignupModal()">Get Started</a>
+        </div>
+    </header>
+    <main style="margin-top: 120px;">
+        <section id="price-insight" class="panel-section">
+            <h3>Price Insights</h3>
+            <p>Lowest Price: <span id="lowest-price">₹799</span></p>
+            <p>Average Price: <span id="avg-price">₹1049</span></p>
+            <p>Highest Price: <span id="highest-price">₹1599</span></p>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

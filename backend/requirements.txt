@@ -1,0 +1,10 @@
+
+fastapi
+uvicorn
+requests
+beautifulsoup4
+sqlalchemy
+python-dotenv
+openai>=1.0.0
+google-generativeai
+google-generativeai
