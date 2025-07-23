@@ -13,9 +13,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 import datetime
 
-SECRET_KEY = "supersecretkey123"  # In production, use a secure random key!
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
