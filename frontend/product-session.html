@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Session | ecomAI</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-papm6Q+..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo">ecomAI</a>
+        <nav>
+            <a href="product-session.html">Product Agent</a>
+            <a href="wishlist.html">Wishlist & Price Alerts</a>
+            <a href="history-insight.html">History Insight</a>
+            <a href="about.html">About Us</a>
+        </nav>
+        <div class="auth">
+            <a href="#" class="login" onclick="toggleAuth(true)">Log in</a>
+            <a href="#" class="cta" onclick="openSignupModal()">Get Started</a>
+        </div>
+    </header>
+    <!-- Initial Category Grid (Step 1) -->
+    <section id="category-grid-section" class="category-grid-section">
+        <div id="category-grid" class="category-grid"></div>
+    </section>
+    <!-- Category Bar + Product Grid (Step 2) -->
+    <section id="category-section" class="category-section" style="display:none;">
+        <div id="category-list" class="category-list"></div>
+    </section>
+    <main style="margin-top: 20px;">
+        <section id="product-session" class="panel-section" style="display:none;">
+            <button id="back-to-categories" class="back-btn">← Back to Categories</button>
+            <div id="product-grid" class="product-grid"></div>
+            <div class="bottom-navigation">
+                <button id="back-to-categories-bottom" class="back-btn">← Back to Categories</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast-notification" class="toast-notification" style="display: none;">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script>
+        // Example categories and products
+        const categories = [
+            { name: 'Electronics', key: 'electronics', img: 'https://images.pexels.com/photos/1476316/pexels-photo-1476316.jpeg' },
+            { name: 'Audio', key: 'audio', img: 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg' },
+            { name: 'E-Readers', key: 'ereaders', img: 'https://images.pexels.com/photos/1329571/pexels-photo-1329571.jpeg' },
+            { name: 'Laptops', key: 'laptops', img: 'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg' },
+            { name: 'Smart Home', key: 'smarthome', img: 'https://images.pexels.com/photos/1666315/pexels-photo-1666315.jpeg' },
+            { name: 'Wearables', key: 'wearables', img: 'https://source.unsplash.com/600x600/?wearable,smartwatch' },
+            { name: 'Gaming', key: 'gaming', img: 'https://images.unsplash.com/photo-1604846887565-640d2f52d564?fm=jpg&q=60&w=3000' },
+            { name: 'Cameras', key: 'cameras', img: 'https://images.pexels.com/photos/274973/pexels-photo-274973.jpeg' },
+            { name: 'Tablets', key: 'tablets', img: 'https://images.pexels.com/photos/5088023/pexels-photo-5088023.jpeg' },
+            { name: 'PC Accessories', key: 'pcaccessories', img: 'https://source.unsplash.com/600x600/?computer-accessories' },
+            { name: 'TV & Video', key: 'tvvideo', img: 'https://source.unsplash.com/600x600/?television' },
+            { name: 'Networking', key: 'networking', img: 'https://source.unsplash.com/600x600/?networking' }
+        ];
+        const products = {
+            electronics: [
+                { name: 'Smartphone X', price: '₹29,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Tablet Pro', price: '₹19,499', rating: 4.2, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Camera Zoom', price: '₹15,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart TV 55"', price: '₹45,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Console', price: '₹39,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Wireless Charger', price: '₹1,499', rating: 4.1, img: 'https://images.unsplash.com/photo-1609592806596-b43bada2f4d4?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Power Bank 20K', price: '₹2,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1609592806596-b43bada2f4d4?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Bluetooth Speaker', price: '₹3,499', rating: 4.2, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' }
+            ],
+            audio: [
+                { name: 'Wireless Earbuds', price: '₹2,499', rating: 4.4, img: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Bluetooth Speaker', price: '₹1,999', rating: 4.1, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Noise Cancelling Headphones', price: '₹8,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Headset', price: '₹4,499', rating: 4.3, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Portable Speaker', price: '₹3,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Studio Monitors', price: '₹12,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'USB Microphone', price: '₹2,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Audio Interface', price: '₹6,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=120&h=120&fit=crop&crop=center' }
+            ],
+            ereaders: [
+                { name: 'E-Reader Lite', price: '₹7,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'E-Reader Pro', price: '₹12,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'E-Reader Mini', price: '₹5,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'E-Reader Waterproof', price: '₹15,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'E-Reader Kids', price: '₹4,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' },
+                { name: 'E-Reader Premium', price: '₹18,999', rating: 4.9, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=120&h=120&fit=crop&crop=center' }
+            ],
+            laptops: [
+                { name: 'Laptop Air', price: '₹49,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Laptop', price: '₹89,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Business Laptop', price: '₹65,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Student Laptop', price: '₹35,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Ultrabook Pro', price: '₹75,999', rating: 4.9, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Convertible Laptop', price: '₹55,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Workstation Laptop', price: '₹1,25,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Budget Laptop', price: '₹25,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&crop=center' }
+            ],
+            smarthome: [
+                { name: 'Smart Bulb', price: '₹699', rating: 4.2, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Plug', price: '₹999', rating: 4.3, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Speaker', price: '₹4,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Security Camera', price: '₹2,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Thermostat', price: '₹8,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Lock', price: '₹6,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Robot Vacuum', price: '₹15,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Curtains', price: '₹12,999', rating: 4.1, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' }
+            ],
+            wearables: [
+                { name: 'Fitness Band', price: '₹1,499', rating: 4.0, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smartwatch Pro', price: '₹8,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Sports Watch', price: '₹3,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Health Monitor', price: '₹5,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Ring', price: '₹2,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&crop=center' },
+                { name: 'VR Headset', price: '₹25,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=120&h=120&fit=crop&crop=center' },
+                { name: 'AR Glasses', price: '₹45,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Smart Glasses', price: '₹12,999', rating: 4.1, img: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=120&h=120&fit=crop&crop=center' }
+            ],
+            gaming: [
+                { name: 'Game Console', price: '₹29,999', rating: 4.9, img: 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Mouse', price: '₹2,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Keyboard', price: '₹4,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Headset', price: '₹3,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Monitor', price: '₹18,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Chair', price: '₹12,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Controller', price: '₹1,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Mousepad', price: '₹799', rating: 4.1, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' }
+            ],
+            cameras: [
+                { name: 'DSLR Camera', price: '₹45,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Mirrorless Camera', price: '₹55,999', rating: 4.9, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Action Camera', price: '₹12,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Point & Shoot', price: '₹8,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Security Camera', price: '₹3,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Webcam HD', price: '₹2,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Drone Camera', price: '₹25,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' },
+                { name: '360° Camera', price: '₹15,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=120&h=120&fit=crop&crop=center' }
+            ],
+            tablets: [
+                { name: 'iPad Pro', price: '₹65,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Android Tablet', price: '₹25,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Kids Tablet', price: '₹8,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Drawing Tablet', price: '₹15,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Mini Tablet', price: '₹18,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Business Tablet', price: '₹35,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Tablet', price: '₹45,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Budget Tablet', price: '₹12,999', rating: 4.1, img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=120&h=120&fit=crop&crop=center' }
+            ],
+            pcaccessories: [
+                { name: 'Mechanical Keyboard', price: '₹4,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Mouse', price: '₹2,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Monitor 27"', price: '₹18,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Wireless Mouse', price: '₹1,499', rating: 4.2, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'USB Hub', price: '₹799', rating: 4.1, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Webcam 4K', price: '₹3,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Gaming Headset', price: '₹3,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Laptop Stand', price: '₹1,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=120&h=120&fit=crop&crop=center' }
+            ],
+            tvvideo: [
+                { name: 'Smart TV 55"', price: '₹45,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: '4K TV 65"', price: '₹75,999', rating: 4.8, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Projector HD', price: '₹25,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Soundbar', price: '₹8,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Blu-ray Player', price: '₹4,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'TV Mount', price: '₹2,999', rating: 4.1, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Home Theater', price: '₹35,999', rating: 4.6, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Streaming Device', price: '₹3,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=120&h=120&fit=crop&crop=center' }
+            ],
+            networking: [
+                { name: 'WiFi Router', price: '₹3,999', rating: 4.5, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Mesh WiFi', price: '₹8,999', rating: 4.7, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Network Switch', price: '₹2,999', rating: 4.3, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Ethernet Cable', price: '₹299', rating: 4.1, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'WiFi Extender', price: '₹1,999', rating: 4.2, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'VPN Router', price: '₹5,999', rating: 4.4, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Network Card', price: '₹1,499', rating: 4.0, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' },
+                { name: 'Powerline Adapter', price: '₹2,499', rating: 4.3, img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop&crop=center' }
+            ]
+        };
+        // DOM elements
+        const categoryGridSection = document.getElementById('category-grid-section');
+        const categoryGrid = document.getElementById('category-grid');
+        const categorySection = document.getElementById('category-section');
+        const categoryList = document.getElementById('category-list');
+        const productSession = document.getElementById('product-session');
+        const productGrid = document.getElementById('product-grid');
+        const backBtn = document.getElementById('back-to-categories');
+        const backBtnBottom = document.getElementById('back-to-categories-bottom');
+        let selectedCategory = null;
+        // Render initial category grid
+        function renderCategoryGrid() {
+            categoryGrid.innerHTML = '';
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.style.background = `linear-gradient(rgba(20,20,40,0.68), rgba(20,20,40,0.82)), url('${cat.img}') center/cover no-repeat`;
+                card.innerHTML = `
+                    <div class="category-name">${cat.name}</div>
+                `;
+                card.onclick = () => enterProductView(cat.key);
+                categoryGrid.appendChild(card);
+            });
+        }
+        // Enter product view (step 2)
+        function enterProductView(catKey) {
+            selectedCategory = catKey;
+            categoryGridSection.style.display = 'none';
+            categorySection.style.display = '';
+            productSession.style.display = '';
+            renderCategoriesBar();
+            renderProducts();
+        }
+        // Back to category grid
+        backBtn.onclick = () => {
+            categoryGridSection.style.display = '';
+            categorySection.style.display = 'none';
+            productSession.style.display = 'none';
+            selectedCategory = null;
+        };
+
+        // Bottom back button
+        backBtnBottom.onclick = () => {
+            categoryGridSection.style.display = '';
+            categorySection.style.display = 'none';
+            productSession.style.display = 'none';
+            selectedCategory = null;
+        };
+        // Render horizontal category bar
+        function renderCategoriesBar() {
+            categoryList.innerHTML = '';
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn' + (cat.key === selectedCategory ? ' selected' : '');
+                btn.textContent = cat.name;
+                btn.onclick = () => {
+                    selectedCategory = cat.key;
+                    renderCategoriesBar();
+                    renderProducts();
+                };
+                categoryList.appendChild(btn);
+            });
+        }
+        // Render products for selected category
+        function renderProducts() {
+            productGrid.innerHTML = '';
+            (products[selectedCategory] || []).forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card small';
+                card.innerHTML = `
+                    <img src="${prod.img}" alt="${prod.name}" onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=120&h=120&fit=crop&crop=center'" />
+                    <h4>${prod.name}</h4>
+                    <p>${prod.price} • ⭐ ${prod.rating}</p>
+                    <button class="fav-btn" onclick="addToFavorites('${prod.name}', '${prod.price}', '${prod.rating}', '${prod.img}')">
+                        <i class="fas fa-heart"></i> Add to Favorites
+                    </button>
+                `;
+                productGrid.appendChild(card);
+            });
+            // Update favorite button states after rendering
+            setTimeout(updateFavoriteButtonStates, 100);
+        }
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notification');
+            const toastIcon = toast.querySelector('.toast-icon');
+            const toastMessage = toast.querySelector('.toast-message');
+
+            // Set message and icon
+            toastMessage.textContent = message;
+            toastIcon.className = `toast-icon ${type}`;
+            toast.className = `toast-notification ${type}`;
+
+            // Show toast
+            toast.style.display = 'block';
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.style.display = 'none', 300);
+            }, 3000);
+        }
+
+        // Add to favorites function
+        function addToFavorites(name, price, rating, img) {
+            // Get existing favorites from localStorage
+            let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+            // Check if product is already in favorites
+            const existingIndex = favorites.findIndex(item => item.name === name);
+
+            if (existingIndex === -1) {
+                // Add to favorites
+                favorites.push({ name, price, rating, img, addedAt: new Date().toISOString() });
+                showToast(`❤️ ${name} added to wishlist!`, 'success');
+            } else {
+                // Remove from favorites
+                favorites.splice(existingIndex, 1);
+                showToast(`🗑️ ${name} removed from wishlist!`, 'error');
+            }
+
+            // Save back to localStorage
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+
+            // Update button appearance
+            updateFavoriteButton(name, existingIndex === -1);
+
+            // Update wishlist count
+            updateWishlistCount();
+        }
+
+        // Update favorite button appearance
+        function updateFavoriteButton(productName, isFavorite) {
+            const buttons = document.querySelectorAll('.fav-btn');
+            buttons.forEach(button => {
+                if (button.onclick.toString().includes(productName)) {
+                    if (isFavorite) {
+                        button.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i> Remove from Favorites';
+                        button.style.background = '#e74c3c';
+                        button.style.color = '#fff';
+                    } else {
+                        button.innerHTML = '<i class="fas fa-heart"></i> Add to Favorites';
+                        button.style.background = '#fff';
+                        button.style.color = '#3b82f6';
+                    }
+                }
+            });
+        }
+
+        // Check and update favorite button states on page load
+        function updateFavoriteButtonStates() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            favorites.forEach(fav => {
+                updateFavoriteButton(fav.name, true);
+            });
+        }
+
+        // Update wishlist count in navigation
+        function updateWishlistCount() {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            const wishlistLink = document.querySelector('a[href="wishlist.html"]');
+            if (wishlistLink && favorites.length > 0) {
+                wishlistLink.innerHTML = `Wishlist & Price Alerts <span style="background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; margin-left: 4px;">${favorites.length}</span>`;
+            }
+        }
+
+        // Initial render
+        renderCategoryGrid();
+        updateWishlistCount();
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>

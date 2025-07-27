@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Comparison | ecomAI</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo">ecomAI</a>
+        <nav>
+            <a href="product-session.html">Product Agent</a>
+            <a href="product-comparison.html">Comparisons</a>
+            <a href="history-insight.html">History Insight</a>
+            <a href="about.html">About Us</a>
+        </nav>
+        <div class="auth">
+            <a href="#" class="login" onclick="toggleAuth(true)">Log in</a>
+            <a href="#" class="cta" onclick="openSignupModal()">Get Started</a>
+        </div>
+    </header>
+    <main style="margin-top: 120px;">
+        <section id="product-comparison" class="panel-section">
+            <h3>Product Comparison</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Product A</th>
+                        <th>Product B</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Price</td>
+                        <td id="prod-a-price">₹999</td>
+                        <td id="prod-b-price">₹1299</td>
+                    </tr>
+                    <tr>
+                        <td>Rating</td>
+                        <td id="prod-a-rating">4.2</td>
+                        <td id="prod-b-rating">4.5</td>
+                    </tr>
+                    <tr>
+                        <td>Availability</td>
+                        <td id="prod-a-stock">In Stock</td>
+                        <td id="prod-b-stock">Out of Stock</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>
