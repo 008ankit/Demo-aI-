@@ -2,7 +2,7 @@
 
 A sophisticated AI-driven e-commerce platform that helps users research, compare, and make informed purchasing decisions across multiple online marketplaces including Amazon, Flipkart, and more.
 
-![ecomAI Platform](frontend/ai-agent-page.png)
+![ecomAI Platform](frontend/ai-agent-page.jpg)
 
 ## 🚀 Features
 
